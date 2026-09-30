@@ -1,8 +1,8 @@
-# Longtail — pre-registration v1.0 (DRAFT — NOT FROZEN)
+# Longtail — pre-registration v1.0 (FROZEN)
 
-> **Draft.** Nothing below binds until this file is committed with a frozen
-> hash in `frame/MANIFEST`. No backtest data has been collected beyond the
-> 600-launch M0 sample, and no model has been fitted.
+> **Frozen 30 September 2026.** Its SHA-256 is recorded in `frame/MANIFEST`,
+> committed before the backtest frame was built, before any backtest data was
+> collected and before any model was fitted.
 
 **Drafted 30 September 2026, after [`FEASIBILITY.md`](FEASIBILITY.md) and
 before any collection or modelling.** The M0 sample, including its year-one
