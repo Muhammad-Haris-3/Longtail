@@ -56,4 +56,7 @@ GitHub Actions for the weekly run, Vercel Hobby for the site.
 | Path | |
 |---|---|
 | `probe/m0.py` | M0 feasibility: enumerate launches, sample windowed review counts, report |
+| `backtest/collect.py`, `run.cmd` | Backtest collection (resumable) |
+| `backtest/model.py` | The four methods and the one-time test; `selfcheck` runs on synthetic data |
+| `FINDINGS.md` | Decisions and measurements, append-only |
 | `data/` | Probe outputs: `launches.tsv` (29,896 launches), `m0_sample.tsv` (600, excluded from all tests) |
