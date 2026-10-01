@@ -1,0 +1,36 @@
+name: live
+# PREREGISTRATION §6: every Monday, forecast last week's finished launches, grade older ones, commit both.
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: live
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      # The pickled model was fitted with scikit-learn 1.9.0; a different version may not load it identically.
+      - run: pip install numpy==2.4.2 scikit-learn==1.9.0
+      # Rows are appended one at a time, so stopping early loses nothing; the next Monday picks up the rest.
+      - run: timeout 16200 python live/run.py forecast || true
+      - run: timeout 2400 python live/run.py grade || true
+      - run: |
+          git config user.name "longtail-bot"
+          git config user.email "longtail-bot@users.noreply.github.com"
+          git add register
+          # Append-only (§6): refuse to commit if any existing register line was changed or removed.
+          if git diff --cached --numstat -- register | awk '$2 != 0 {bad=1} END {exit !bad}'; then
+            echo "register lines were modified or deleted; refusing to commit"; git diff --cached -- register | head -50; exit 1
+          fi
+          git diff --cached --quiet || git commit -m "live: register $(date -u +%Y-%m-%d)"
+          git push
