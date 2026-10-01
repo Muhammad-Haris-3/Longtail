@@ -57,3 +57,54 @@ The test set clears the §5.4 power floor of 1,500 by 2.5×.
 **Eligible is a larger share than M0 suggested:** 31.5% of launches have at
 least 10 week-one reviews, against 30.5% in the 600-launch sample.
 
+### F6 — The primary test: the model clears the bar (1 October 2026)
+
+Test set opened once, at commit `8496767`, recorded in
+[`results/test.json`](results/test.json). **3,889** launches released
+January–September 2025, every one with a finished first year.
+
+| Method | Mean absolute log error | 95% CI | Typical miss |
+|---|---|---|---|
+| B1 — industry rule, 3.16× week one | 0.464 | [0.452, 0.477] | 1.59× |
+| B2 — calibrated ratio, 2.65× | 0.442 | [0.429, 0.455] | 1.56× |
+| B3 — log-linear | 0.440 | [0.428, 0.453] | 1.55× |
+| **M — model** | **0.379** | [0.369, 0.392] | **1.46×** |
+
+**M against B3: 13.8% lower error, difference CI [−0.069, −0.052].** The
+pre-registered bar was 10% with an interval excluding zero (§5.3). **Verdict:
+SUCCESS.** Against the industry rule the reduction is 18.2%.
+
+M is better in every week-one size band (§5.5), by the most among the largest
+launches (200+ reviews: 0.362 against B1's 0.440).
+
+**What the success does not mean.** A typical forecast is still wrong by about
+46% in one direction or the other. The model narrows the error; it does not
+make year one predictable. The rule of thumb's centre is close to right: the
+calibrated ratio is **2.65×**, inside "2–5×", and 58.6% of test launches fall
+inside that band.
+
+**Prediction intervals are too narrow.** The 80% intervals contained 74.5% of
+outcomes. They are stated as such, and they must be widened before any live
+forecast carries one.
+
+**Correction to F5.** Its split sizes were counted before the catch-up pass
+was merged. The final sizes are train **3,302**, validation **1,235**, test
+**3,889**, and **684** removed as unclean.
+
+### F7 — What the model leans on (exploratory, not pre-registered) (1 October 2026)
+
+`analysis/importance.py` permutes each feature on the **validation** set, not
+the test. Beyond week-one size itself, two signals carry nearly all of the
+gain, and both have a plain reading:
+
+- **Language spread.** Launches whose week-one reviews come in **3 or fewer
+  languages** reach a median of **2.0×** week one by year end. Those with **more
+  than 6** reach **3.6×**.
+- **Momentum.** Launches where **30% or less** of week one's reviews arrive on
+  days 4–7 (a launch-day spike that fades) reach **2.1×**. Those where **more
+  than 45%** arrive late in the week reach **3.6×**.
+
+Recommendation share adds little, and its relationship to year one is not
+monotonic. Both leading signals are correlated with launch size, so they are
+descriptions of what the model uses, not causes a studio can pull.
+

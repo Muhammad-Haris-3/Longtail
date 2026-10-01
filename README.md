@@ -7,10 +7,14 @@ Longtail forecasts a game's first-year demand from its first seven days on
 Steam, scores that forecast against the rules the industry actually uses, and
 publishes each live forecast **before the outcome exists**.
 
-> **Status: pre-registration frozen; backtest collected; test set not yet opened.**
-> 28,905 launches counted and 9,110 collected in full
-> ([`FINDINGS.md`](FINDINGS.md) F5). The methods were committed before
-> collection finished. No forecast has been scored.
+> **Status: primary test complete — the model clears the pre-registered bar.**
+> On 3,889 games released in 2025, a model reading week one cut the typical
+> forecast error from **59%** (the industry rule) and **55%** (the best simple
+> formula) to **46%**, which is 13.8% below the formula against a bar of 10%. The
+> rule's centre is about right: year one averages **2.65×** week one.
+> [Decision memo](DECISION_MEMO.md) (two pages, no statistics) ·
+> [Findings](FINDINGS.md) F6–F7 · [Result file](results/test.json).
+> Live forecasting has not started.
 
 ---
 
@@ -57,5 +61,7 @@ GitHub Actions for the weekly run, Vercel Hobby for the site.
 | `probe/m0.py` | M0 feasibility: enumerate launches, sample windowed review counts, report |
 | `backtest/collect.py`, `run.cmd` | Backtest collection (resumable) |
 | `backtest/model.py` | The four methods and the one-time test; `selfcheck` runs on synthetic data |
+| `analysis/importance.py` | Exploratory: which week-one signals the model uses |
+| `results/test.json` | The one-time test, with the commit it ran at |
 | `FINDINGS.md` | Decisions and measurements, append-only |
 | `data/` | Probe outputs: `launches.tsv` (29,896 launches), `m0_sample.tsv` (600, excluded from all tests) |
