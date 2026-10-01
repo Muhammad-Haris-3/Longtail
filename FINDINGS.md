@@ -108,3 +108,27 @@ Recommendation share adds little, and its relationship to year one is not
 monotonic. Both leading signals are correlated with launch size, so they are
 descriptions of what the model uses, not causes a studio can pull.
 
+### F8 — The live record has started (1 October 2026)
+
+The first live run (GitHub Actions, commit `a6fda89`) recorded **521**
+launches released 21–24 September 2026, whose week one had just ended.
+**162** were eligible and were forecast by all four methods, with the exact
+model the test scored (`live/fit.py` asserts it reproduces the test error to
+twelve decimal places). From now on the workflow runs every Monday at 06:00
+UTC.
+
+- `register/forecasts.tsv` and `register/grades.tsv` are append-only. The
+  workflow refuses to commit if any existing line changed.
+- Each row records the week-one count **as observed** on the day it was
+  forecast. The backtest could only use today's counts.
+- **Day-30 grades start in late October, day-90 grades in late December, and
+  day-365 grades in September 2027.** No live accuracy figure is published
+  before 300 day-90 grades exist (§6).
+
+**Already visible, and not a result:** on the largest launches the model
+departs sharply from the rule of thumb. For one launch with 5,654 week-one
+reviews it forecasts about 91,600 by year end, where the rule says about
+17,900. Large launches were where the model gained most in the backtest, and
+they are also the thinnest part of its training data. The live grades will
+show which reading is right.
+

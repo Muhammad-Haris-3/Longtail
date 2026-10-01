@@ -14,7 +14,9 @@ publishes each live forecast **before the outcome exists**.
 > rule's centre is about right: year one averages **2.65×** week one.
 > [Decision memo](DECISION_MEMO.md) (two pages, no statistics) ·
 > [Findings](FINDINGS.md) F6–F7 · [Result file](results/test.json).
-> Live forecasting has not started.
+> **Live since 1 October 2026:** every Monday, last week's launches are
+> forecast before their outcomes exist and committed to an append-only
+> [register](register/forecasts.tsv), then graded at day 30, 90 and 365.
 
 ---
 
@@ -63,5 +65,7 @@ GitHub Actions for the weekly run, Vercel Hobby for the site.
 | `backtest/model.py` | The four methods and the one-time test; `selfcheck` runs on synthetic data |
 | `analysis/importance.py` | Exploratory: which week-one signals the model uses |
 | `results/test.json` | The one-time test, with the commit it ran at |
+| `live/run.py`, `live/fit.py` | Weekly live forecasting and grading; freezing the tested model |
+| `register/` | The live forecasts and grades, append-only |
 | `FINDINGS.md` | Decisions and measurements, append-only |
 | `data/` | Probe outputs: `launches.tsv` (29,896 launches), `m0_sample.tsv` (600, excluded from all tests) |
