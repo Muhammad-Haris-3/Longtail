@@ -137,5 +137,30 @@ def shard(jobs_path, i, n, outdir, limit="0"):
     run(rows, one, f"{outdir}/shard.tsv", HEADER)
 
 
+def merge(*shard_dirs):
+    """Fold shard outputs (gh run download) into counts.tsv / eligible.tsv / reviews/, then check nothing is missing."""
+    def rows(path):
+        return [l.rstrip("\n").split("\t") for l in open(path, encoding="utf-8")][1:]
+
+    counts = {r[0]: r for r in rows(COUNTS)}
+    elig = {r[0]: r for r in rows(ELIG)}
+    for sd in shard_dirs:
+        for r in rows(f"{sd}/shard.tsv"):
+            counts.setdefault(r[0], r[:3])
+            if r[3] != "" and r[0] not in elig:
+                elig[r[0]] = r
+                os.replace(f"{sd}/reviews/{r[0]}.jsonl", f"{REV}/{r[0]}.jsonl")
+    for path, header, data in ((COUNTS, "appid\trelease\tw1", counts), (ELIG, HEADER, elig)):
+        with open(path, "w", encoding="utf-8", newline="\n") as f:
+            f.write(header + "\n")
+            f.writelines("\t".join(r) + "\n" for r in sorted(data.values()))
+    frame = {a for a, _ in launches()}
+    big = {a for a, r in counts.items() if int(r[2]) >= 10}
+    missing = [a for a in elig if not os.path.exists(f"{REV}/{a}.jsonl")]
+    print(f"counts {len(counts)}/{len(frame)}  uncounted {len(frame - set(counts))}  "
+          f"w1>=10 {len(big)}  eligible rows {len(elig)}  missing step two {len(big - set(elig))}  "
+          f"missing review files {len(missing)}")
+
+
 if __name__ == "__main__":
-    {"frame": frame, "counts": counts, "reviews": reviews, "shard": shard}[sys.argv[1]](*sys.argv[2:])
+    {"frame": frame, "counts": counts, "reviews": reviews, "shard": shard, "merge": merge}[sys.argv[1]](*sys.argv[2:])
