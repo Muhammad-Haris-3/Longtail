@@ -34,3 +34,26 @@ year one depends only on how late in week one the reviews arrive, a signal the
 baselines cannot see. Validation MALE: B1 0.345, B2 0.304, B3 0.304, **M
 0.136**. The gap shows the pipeline can find a signal where one exists. It says
 nothing about whether one exists in Steam.
+
+### F5 — Collection complete; the split sizes (1 October 2026)
+
+All **28,905** launches have a week-one count, and **9,110 of 9,111** with at
+least 10 week-one reviews were collected in full (the exception is
+PREREGISTRATION §9 A1). The local machine drew heavy 429s on paged review
+calls. Eight GitHub Actions runners, each with its own IP, finished the rest in
+about five hours, plus a catch-up pass.
+
+After the clean-launch rule, without reading any outcome:
+
+| Set | Launches |
+|---|---|
+| Train | 3,162 |
+| Validation | 1,195 |
+| **Test** | **3,807** |
+| Removed as unclean (Early Access residue) | 619 |
+
+The test set clears the §5.4 power floor of 1,500 by 2.5×.
+
+**Eligible is a larger share than M0 suggested:** 31.5% of launches have at
+least 10 week-one reviews, against 30.5% in the 600-launch sample.
+

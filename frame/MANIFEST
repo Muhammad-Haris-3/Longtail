@@ -1,3 +1,4 @@
 # Longtail frame manifest. Append-only.
 preregistration  PREREGISTRATION.md  v1.0  sha256=56b9713473e18c0a37e09ff342f71f0ef985c2dff6a75385ff2a3b85a206b8f2  frozen=2026-09-30T09:20Z
 frame            frame/frame.tsv  n=29505  releases=2024-01-01..2025-09-29  sha256=4af08a61190d9aa170c1d9f280219274d9656f5976b716095e68fa8ec28098f2  built=2026-09-30T09:44Z
+amendment  PREREGISTRATION.md  v1.0+A1  sha256=5af6cad1095768cce3a62be38ad8ea1aca87b111d5b700c1c05c7ba560f89f91  at=2026-10-01T08:46Z

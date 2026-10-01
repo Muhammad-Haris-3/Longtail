@@ -139,4 +139,17 @@ measurement that deletions (FEASIBILITY §6) can later erode.
 
 ## 9. Amendments
 
-None.
+### A1 — one training launch excluded (1 October 2026)
+
+**What changed:** *Black Myth: Wukong* (appid 2358720, released 2024-08-19,
+train split) is excluded from every set.
+
+**Why:** its week one holds **502,562 reviews**, about 5,000 pages. A
+collection runner spent more than an hour on it under Steam's rate limits
+without finishing. Every other eligible launch, 9,110 of 9,111, was collected
+in full.
+
+**What had been seen:** its week-one count and its pre-release count. Not its
+year-one outcome, and nothing from the test split. The test split is untouched
+by this amendment, and one launch in 3,163 cannot move the fitted baselines
+materially.

@@ -7,11 +7,10 @@ Longtail forecasts a game's first-year demand from its first seven days on
 Steam, scores that forecast against the rules the industry actually uses, and
 publishes each live forecast **before the outcome exists**.
 
-> **Status: M0 complete; pre-registration drafted, not frozen. Nothing published.**
-> No forecast has been made and no rule of thumb has been scored.
-> [`FEASIBILITY.md`](FEASIBILITY.md) records what the data can support;
-> [`PREREGISTRATION.md`](PREREGISTRATION.md) fixes the test before any backtest
-> data is collected or any model fitted.
+> **Status: pre-registration frozen; backtest collected; test set not yet opened.**
+> 28,905 launches counted and 9,110 collected in full
+> ([`FINDINGS.md`](FINDINGS.md) F5). The methods were committed before
+> collection finished. No forecast has been scored.
 
 ---
 
