@@ -1,0 +1,39 @@
+name: backtest-collect
+# Splits backtest/jobs.tsv across runners; each has its own IP and so its own Steam rate limit.
+on:
+  workflow_dispatch:
+    inputs:
+      shards: {description: "number of runners", default: "8"}
+      limit: {description: "jobs per runner, 0 = all (use a small number to test)", default: "0"}
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      idx: ${{ steps.m.outputs.idx }}
+    steps:
+      - id: m
+        run: echo "idx=$(python3 -c 'print(list(range(${{ inputs.shards }})))')" >> "$GITHUB_OUTPUT"
+
+  shard:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    strategy:
+      fail-fast: false
+      matrix:
+        i: ${{ fromJSON(needs.plan.outputs.idx) }}
+    steps:
+      - uses: actions/checkout@v4
+      # Stop at 5h20m so the upload below always runs inside the 6h job ceiling; rows are flushed one by one.
+      - run: |
+          mkdir -p out
+          timeout 19200 python3 backtest/collect.py shard backtest/jobs.tsv ${{ matrix.i }} ${{ inputs.shards }} out ${{ inputs.limit }} > out/log.txt 2>&1 || true
+          tail -5 out/log.txt
+      - run: echo "rows $(($(wc -l < out/shard.tsv) - 1)), 429s $(grep -c 429 out/log.txt || true)"
+        if: always()
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shard-${{ matrix.i }}
+          path: out

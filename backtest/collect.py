@@ -100,23 +100,42 @@ def fetch_week_one(appid, start):
         cursor = j["cursor"]
 
 
+def review_job(j, rev=REV):
+    appid, d, w1 = j
+    s = t0(d)
+    pre = count(appid, 1, s - 1)
+    y = count(appid, s, s + 365 * DAY - 1)
+    rv = fetch_week_one(appid, s) if pre < 0.1 * w1 else []  # §2: only clean launches need features
+    with open(f"{rev}/{appid}.jsonl", "w", encoding="utf-8", newline="\n") as f:
+        f.writelines(json.dumps(r) + "\n" for r in rv)
+    return appid, d, w1, pre, y, len(rv), int(time.time())
+
+
+HEADER = "appid\trelease\tw1\tpre\ty365\tn_fetched\tcollected_at"
+
+
 def reviews():
     os.makedirs(REV, exist_ok=True)
     rows = [l.rstrip("\n").split("\t") for l in open(COUNTS, encoding="utf-8")][1:]
     jobs = [(a, d, int(w)) for a, d, w in rows if int(w) >= 10]
+    run(jobs, review_job, ELIG, HEADER)
+
+
+def shard(jobs_path, i, n, outdir, limit="0"):
+    """One slice of backtest/jobs.tsv, for a GitHub Actions runner (its own IP, so its own rate limit).
+    Jobs with a blank w1 are counted first; launches under 10 week-one reviews get blank pre/y365/n_fetched."""
+    rows = [l.rstrip("\n").split("\t") for l in open(jobs_path, encoding="utf-8")][1:][int(i)::int(n)]
+    rows = rows[:int(limit)] if int(limit) else rows
+    rev = f"{outdir}/reviews"
+    os.makedirs(rev, exist_ok=True)
 
     def one(j):
         appid, d, w1 = j
-        s = t0(d)
-        pre = count(appid, 1, s - 1)
-        y = count(appid, s, s + 365 * DAY - 1)
-        rv = fetch_week_one(appid, s) if pre < 0.1 * w1 else []  # §2: only clean launches need features
-        with open(f"{REV}/{appid}.jsonl", "w", encoding="utf-8", newline="\n") as f:
-            f.writelines(json.dumps(r) + "\n" for r in rv)
-        return appid, d, w1, pre, y, len(rv), int(time.time())
+        w1 = int(w1) if w1 else count(appid, t0(d), t0(d) + 7 * DAY - 1)
+        return review_job((appid, d, w1), rev) if w1 >= 10 else (appid, d, w1, "", "", "", int(time.time()))
 
-    run(jobs, one, ELIG, "appid\trelease\tw1\tpre\ty365\tn_fetched\tcollected_at")
+    run(rows, one, f"{outdir}/shard.tsv", HEADER)
 
 
 if __name__ == "__main__":
-    {"frame": frame, "counts": counts, "reviews": reviews}[sys.argv[1]]()
+    {"frame": frame, "counts": counts, "reviews": reviews, "shard": shard}[sys.argv[1]](*sys.argv[2:])
